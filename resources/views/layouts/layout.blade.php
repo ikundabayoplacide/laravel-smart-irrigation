@@ -13,6 +13,9 @@
     <!-- Bootstrap CSS (optional if you are using Tailwind) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <title>Irrigation System</title>
     @vite('resources/css/app.css')
 </head>

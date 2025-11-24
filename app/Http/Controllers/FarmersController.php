@@ -84,9 +84,10 @@ protected function downloadExcel($data)
     public function create(Request $request)
     {
         // $devices = DeviceData::all();
-        $devices = DeviceData::select('DEVICE_ID')->distinct()->get()->pluCk('DEVICE_ID');
+        $devices = DeviceData::select('DEVICE_ID')->distinct()->get();
+        $cooperatives = \App\Models\Cooperative::all();
         // dd($devices)
-        return view('farmers.register', compact('devices'));
+        return view('farmers.register', compact('devices', 'cooperatives'));
     }
 
     public function store(Request $request)
@@ -94,19 +95,27 @@ protected function downloadExcel($data)
         $request->validate([
             'name' => 'required',
             'email' => 'required',
+            'province' => 'required',
             'district' => 'required',
+            'sector' => 'required',
+            'cell' => 'required',
             'phone' => 'required',
             'password' => 'required',
             'gender' => 'required',
+            'cooperative_id' => 'nullable|exists:cooperatives,id',
         ]);
 
         $farmer = Farmer::create([
             'name' => $request->name,
             'email' => $request->email,
+            'province' => $request->province,
             'district' => $request->district,
+            'sector' => $request->sector,
+            'cell' => $request->cell,
             'phone' => $request->phone,
             'password' => Hash::make($request->password),
             'gender' => $request->gender,
+            'cooperative_id' => $request->cooperative_id,
         ]);
 
         // Find the device using DEVICE_ID
@@ -122,13 +131,29 @@ protected function downloadExcel($data)
         return redirect()->route('farmers.index')->with('success', 'Farmer created successfully');
     }
 
+    public function show(Farmer $farmers)
+    {
+        return view('farmers.show', compact('farmers'));
+    }
+
+    public function edit(Farmer $farmers)
+    {
+        $devices = DeviceData::select('DEVICE_ID')->distinct()->get();
+        $cooperatives = \App\Models\Cooperative::all();
+        return view('farmers.edit', compact('farmers', 'devices', 'cooperatives'));
+    }
+
     public function update(Request $request, Farmer $farmers)
     {
         $request->validate([
             'name' => 'required',
             'email' => 'required',
+            'province' => 'required',
             'district' => 'required',
+            'sector' => 'required',
+            'cell' => 'required',
             'phone' => 'required',
+            'cooperative_id' => 'nullable|exists:cooperatives,id',
         ]);
 
         $farmers->update($request->all());

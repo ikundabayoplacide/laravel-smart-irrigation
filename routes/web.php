@@ -11,7 +11,8 @@ use App\Http\Controllers\cooperativeController;
 use App\Http\Controllers\DeviceDataController;
 use App\Http\Controllers\FarmersController;
 use App\Http\Controllers\HighChartController;
-use App\Http\Controllers\MembershipController;
+use App\Http\Controllers\SettingsController;
+
 
 
 Route::get('/', function () {
@@ -22,12 +23,21 @@ Route::get('/', function () {
 // Locale Change Route
 Route::get('/lang',[LanguageController::class , 'change'])->name('user.lang');
 
+// Public Registration Routes
+Route::get('/register', [App\Http\Controllers\Auth\RegisterController::class, 'index'])->name('user.register');
+Route::post('/register', [App\Http\Controllers\Auth\RegisterController::class, 'store'])->name('user.register.store');
+
 // Admin authentication routes
 Route::get('admin/register', [AdminRegistationController::class, 'create'])->name('admin.register');
 Route::post('admin/register', [AdminRegistationController::class, 'store'])->name('admin.store');
-Route::get('/admin/login', [AdminLoginController::class, 'index'])->name('admin.login')->middleware('clear_cookies');
+Route::get('/login', [AdminLoginController::class, 'index'])->name('admin.login')->middleware('clear_cookies');
 Route::post('admin/check', [AdminLoginController::class, 'admincheck'])->name('admin.check');
 Route::get('/farmers/display', [FarmersController::class, 'display'])->name('farmers.display');
+
+// Reporting Routes
+Route::get('/reports', [App\Http\Controllers\ReportController::class, 'index'])->name('reports.index');
+Route::post('/reports/generate', [App\Http\Controllers\ReportController::class, 'generate'])->name('reports.generate');
+Route::get('/weather', [App\Http\Controllers\WeatherController::class, 'index'])->name('weather.index');
 
 
 // Authenticated routes
@@ -37,7 +47,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/searching',[UserController::class,'searching']);
     Route::get('/searching',[cooperativeController::class,'searching']);
     Route::get('/searches',[RoleController::class,'searches']);
-    Route::get('/searches',[MembershipController::class,'searches']);
+
     Route::get('/search',[FarmersController::class,'search']);
     Route::get('farmers/index', [FarmersController::class, 'index'])->name('farmers.index');
     Route::get('farmers/create', [FarmersController::class, 'create'])->name('farmers.register');
@@ -83,8 +93,16 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('cooperative/assignment-details', [CooperativeController::class, 'showAssignmentDetails'])->name('cooperatives.showAssignmentDetails');
     Route::get('/testChart',[HighChartController::class,'visual']);
 
+    // Settings Route
+    Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
+    
+    // Profile Routes
+    Route::get('/profile/edit', [SettingsController::class, 'editProfile'])->name('profile.edit');
+    Route::put('/profile/update', [SettingsController::class, 'updateProfile'])->name('profile.update');
+    Route::post('/profile/password/change', [SettingsController::class, 'changePassword'])->name('profile.password.change');
 
-    Route::resource('memberships', MembershipController::class);
+
+
 
 });
 

@@ -14,7 +14,7 @@
                 <div class="form-group">
                     <label for="device_id">{{ __('Select Device:') }}</label>
                     <select name="device_id" id="device_id" class="form-control">
-                        <option value="">{{ __('--Select Device--') }}</option>
+                        <option value="">{{ __('--Choose Device--') }}</option>
                         @foreach ($deviceIDs as $deviceID)
                             <option value="{{ $deviceID }}"
                                 {{ $selectedDeviceID == $deviceID ? 'selected' : '' }}>
@@ -34,6 +34,7 @@
                 <table class="table border-separate border-spacing-2 border ">
                     <thead>
                         <tr>
+                            <th class="border">{{ __('Device Name') }}</th>
                             <th class="border">{{ __('Device ID') }}</th>
                             <th class="border">{{ __('Sensor Temperature') }}</th>
                             <th class="border">{{ __('Sensor Humidity') }}</th>
@@ -46,6 +47,7 @@
                     <tbody>
                         @foreach ($data as $device_data)
                             <tr>
+                                <td class="border">{{ $device_data->name }}</td>
                                 <td class="border">{{ $device_data->DEVICE_ID }}</td>
                                 <td class="border">{{ $device_data->S_TEMP }}</td>
                                 <td class="border">{{ $device_data->S_HUM }}</td>
@@ -59,17 +61,19 @@
                                             class="btn btn-info btn-sm">
                                             <i class="fa fa-eye" aria-hidden="true"></i>{{__('View') }}
                                         </a>
+                                        @role('Admin')
                                         <a href="{{ route('device_data.edit', ['device_data' => $device_data->id]) }}"
                                             class="btn btn-primary btn-sm">
                                             <i class="fa-solid fa-pen-to-square"></i>{{__('Edit') }}
                                         </a>
-                                        <form action="{{ route('device_data.delete', $device_data->DEVICE_ID) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this device and all its data?');" style="display: inline">
+                                        <form action="{{ route('device_data.delete', $device_data->DEVICE_ID) }}" method="POST" class="delete-form" style="display: inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger btn-sm">
                                                 <i class="fa-solid fa-trash-can"></i> {{__('Delete') }}
                                             </button>
                                         </form>
+                                        @endrole
                                     </div>
                                 </td>
 

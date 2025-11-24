@@ -23,7 +23,12 @@
                 </div>
                <div>
                 <label class="font-bold font-serif">{{__('Password')}}</label>
-                <input type="password" name="password" id="password" class="flex w-80 h-3 p-4 rounded"> </br>
+                <div class="input-group" style="max-width: 320px;">
+                    <input type="password" name="password" id="password" class="form-control">
+                    <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('password')">
+                        <i class="fa fa-eye" id="password-icon"></i>
+                    </button>
+                </div>
 
               </div>
                 <div>
@@ -39,13 +44,13 @@
                 <div>
                 <label class="font-bold font-serif">{{__('Role')}}</label>
                 <select name="role" id="role" class="flex w-80 h-4 p-3 rounded ">
-                    <option value="rab">{{__('Rab')}}</option>
-                    <option value="sedo">Sedo</option>
-                    <option value="naeb">{{__('NAEB')}}</option>
+                    <!-- <option value="rab">{{__('Rab')}}</option> -->
+                    <!-- <option value="sedo">Sedo</option> -->
+                    <!-- <option value="naeb">{{__('NAEB')}}</option> -->
                     <option value="cooperative_manager">{{__('Cooperative Manager')}}</option>
-                    <option value="sector_agronome">{{__('Sector Agronome')}}</option>
-                    <option value="district_agronome">{{__('District Agronome')}}</option>
-                    <option value="self-farmer" >{{__('Self Farmer')}}</option>
+                    <!-- <option value="sector_agronome">{{__('Sector Agronome')}}</option> -->
+                    <!-- <option value="district_agronome">{{__('District Agronome')}}</option> -->
+                    <option value="self_farmer" >{{__('Self Farmer')}}</option>
 
                 </select> </br>
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\DeviceData;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\DeviceDataExport;
@@ -106,8 +107,16 @@ class UserController extends Controller
         $user = User::find($id);
         $roles = Role::pluck('name', 'name')->all();
         $userRole = $user->roles()->pluck('name', 'name')->all();
+        
+        // Get all distinct device IDs for assignment
+        $devices = DeviceData::select('DEVICE_ID')->distinct()->get();
+        
+        // Get currently assigned device for this user
+        $assignedDevice = DeviceData::where('user_id', $user->id)
+            ->select('DEVICE_ID')
+            ->first();
 
-        return view('users.edit', compact('user', 'roles', 'userRole'));
+        return view('users.edit', compact('user', 'roles', 'userRole', 'devices', 'assignedDevice'));
     }
 
     public function update(Request $request, $id)
@@ -116,6 +125,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'address' => 'nullable|string|max:255',
             'phone' => 'nullable|string|max:255',
+            'device_id' => 'nullable|exists:device_data,DEVICE_ID',
         ]);
 
         $user = User::findOrFail($id);
@@ -125,6 +135,19 @@ class UserController extends Controller
         $user->phone = $request->input('phone');
 
         $user->save();
+        
+        // Handle device assignment for self_farmer users
+        if ($user->hasRole('self_farmer') && $request->has('device_id')) {
+            // First, remove this device from any other user
+            DeviceData::where('DEVICE_ID', $request->device_id)
+                ->update(['user_id' => null]);
+            
+            // Then assign it to this user
+            if ($request->device_id) {
+                DeviceData::where('DEVICE_ID', $request->device_id)
+                    ->update(['user_id' => $user->id]);
+            }
+        }
 
         return redirect()->route('users.index')
             ->with('success', 'User updated successfully');

@@ -8,6 +8,15 @@
     <form action="{{ route('device_data.update', ['device_data' => $device_data->id]) }}" method="POST">
         @csrf
         @method('PUT')
+        <input type="hidden" name="device_state" value="{{ $device_data->device_state }}">
+        <input type="hidden" name="on_off" value="{{ $device_data->on_off }}">
+        <input type="hidden" name="PRED_AMOUNT" value="{{ $device_data->PRED_AMOUNT }}">
+
+        <div class="form-group">
+            <label for="name">{{__('Device Name')}}</label>
+            <input type="text" class="form-control" id="name" name="name"
+                value="{{ old('name', $device_data->name) }}" required>
+        </div>
 
         <div class="form-group">
             <label for="DEVICE_ID">{{__('Device ID')}}</label>
@@ -38,7 +47,7 @@
             <input type="number" class="form-control" id="A_HUM" name="A_HUM"
                 value="{{ old('A_HUM', $device_data->A_HUM) }}" required>
         </div> <br>
-
+        <a href="{{ route('device_data.index') }}" class="btn btn-secondary"> <i class="fa fa-arrow-left me-1"></i>{{__('Back')}}</a>
         <button type="submit" class="btn btn-primary">{{__('Update')}}</button>
     </form>
 </main>

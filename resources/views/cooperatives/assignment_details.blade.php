@@ -46,10 +46,10 @@
                             </a>
                             @endcan
                             @can('delete-user')
-                            <form method="POST" action="{{ url('/details/' . $detail->id) }}" accept-charset="UTF-8" style="display:inline">
+                            <form method="POST" action="{{ url('/details/' . $detail->id) }}" accept-charset="UTF-8" style="display:inline" class="delete-form">
                                 {{ method_field('DELETE') }}
                                 {{ csrf_field() }}
-                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this cooperative?')" title="Delete Cooperative">
+                                <button type="submit" class="btn btn-danger btn-sm" title="Delete Cooperative">
                                     <i class="fa fa-trash" aria-hidden="true"></i>{{ __('Delete') }}
                                 </button>
                             </form>

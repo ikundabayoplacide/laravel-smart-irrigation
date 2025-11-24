@@ -16,9 +16,13 @@ class Farmer extends Model
         'name',
         'email',
         'district',
+        'province',
+        'sector',
+        'cell',
         'phone',
         'password',
         'gender',
+        'cooperative_id',
     ];
 
     public function deviceDate(){
@@ -26,6 +30,6 @@ class Farmer extends Model
     }
 
     public function cooperative(){
-        return $this->belongsTo(cooperative::class);
+        return $this->belongsTo(Cooperative::class);
     }
 }

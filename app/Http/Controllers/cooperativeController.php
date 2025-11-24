@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\cooperative;
+use App\Models\Cooperative;
+use App\Models\DeviceData;
 use App\Models\Farmer;
-use App\Models\membership;
+use App\Models\Membership;
 use Illuminate\Http\Request;
 
 class cooperativeController extends Controller
@@ -24,7 +25,7 @@ class cooperativeController extends Controller
     public function searching(Request $request){
         $searching = $request->search;
 
-        $cooperatives = cooperative::where(function($query) use ($searching){
+        $cooperatives = Cooperative::where(function($query) use ($searching){
             $query->where('name', 'like', "%$searching%")
                   ->orWhere('location', 'like', "%$searching%")
                   ->orWhere('services_offered','like',"%$searching");
@@ -35,15 +36,30 @@ class cooperativeController extends Controller
     public function create()
     {
         $farmers=Farmer::all();
-        // dd($farmers);
-        return view('cooperatives.create',compact('farmers'));
+        $devices = DeviceData::select('DEVICE_ID')->distinct()->get();
+        return view('cooperatives.create',compact('farmers', 'devices'));
     }
 
     public function store(Request $request)
     {
+        $request->validate([
+            'name' => 'required',
+            'province' => 'required',
+            'district' => 'required',
+            'sector' => 'required',
+            'cell' => 'required',
+            'device_id' => 'required|exists:device_data,DEVICE_ID',
+            'services' => 'required|array|min:1',
+        ]);
 
-        Cooperative::create($request->all());
-        return redirect()->route('cooperatives.index');
+        $data = $request->all();
+        // Convert services array to comma-separated string
+        $data['services_offered'] = implode(', ', $request->services);
+        // Create location from detailed location fields
+        $data['location'] = $request->province . ', ' . $request->district . ', ' . $request->sector . ', ' . $request->cell;
+
+        Cooperative::create($data);
+        return redirect()->route('cooperatives.index')->with('success', 'Cooperative created successfully');
 
     }
 
@@ -54,13 +70,30 @@ class cooperativeController extends Controller
 
     public function edit(Cooperative $cooperative)
     {
-        return view('cooperatives.edit', compact('cooperative'));
+        $devices = DeviceData::select('DEVICE_ID')->distinct()->get();
+        return view('cooperatives.edit', compact('cooperative', 'devices'));
     }
 
     public function update(Request $request, Cooperative $cooperative)
     {
-        $cooperative->update($request->all());
-        return redirect()->route('cooperatives.index');
+        $request->validate([
+            'name' => 'required',
+            'province' => 'required',
+            'district' => 'required',
+            'sector' => 'required',
+            'cell' => 'required',
+            'device_id' => 'required|exists:device_data,DEVICE_ID',
+            'services' => 'required|array|min:1',
+        ]);
+
+        $data = $request->all();
+        // Convert services array to comma-separated string
+        $data['services_offered'] = implode(', ', $request->services);
+        // Create location from detailed location fields
+        $data['location'] = $request->province . ', ' . $request->district . ', ' . $request->sector . ', ' . $request->cell;
+
+        $cooperative->update($data);
+        return redirect()->route('cooperatives.index')->with('success', 'Cooperative updated successfully');
     }
 
     public function destroy(Cooperative $cooperative)
@@ -101,9 +134,9 @@ class cooperativeController extends Controller
             'location' => $cooperative->location,
         ];
 
-        membership::create($assignmentData);
+        Membership::create($assignmentData);
 
-        $details=membership::all();
+        $details=Membership::all();
         // $memberships=membership::all();
         $memberships = Membership::paginate(10);
 

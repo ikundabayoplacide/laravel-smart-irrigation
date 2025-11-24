@@ -15,9 +15,14 @@
                     <td>{{ $device_data->id }}</td>
                 </tr>
                 <tr>
+                    <th>{{__('Device Name')}}</th>
+                    <td>{{ $device_data->name }}</td>
+                </tr>
+                <tr>
                     <th>{{__('Device ID')}}</th>
                     <td>{{ $device_data->DEVICE_ID }}</td>
                 </tr>
+
                 <tr>
                     <th>Sensor Temperature (S_TEMP)</th>
                     <td>{{ $device_data->S_TEMP }}</td>
@@ -47,10 +52,10 @@
             <div class="btn-group" role="group">
                 <a href="{{ route('device_data.edit', $device_data->id) }}" class="btn btn-warning mr-2"> <i class="fa-solid fa-pen-to-square"></i>{{__('Edit')}}</a>
 
-                <form action="{{ route('device_data.destroy', $device_data->id) }}" method="POST" style="display: inline-block;margin:0px 8px">
+                <form action="{{ route('device_data.destroy', $device_data->id) }}" method="POST" style="display: inline-block;margin:0px 8px" class="delete-form">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="btn btn-danger " onclick="return confirm('Are you sure you want to delete this data?');"><i class="fa-solid fa-trash-can"></i>{{__('Delete')}}</button>
+                    <button type="submit" class="btn btn-danger "><i class="fa-solid fa-trash-can"></i>{{__('Delete')}}</button>
                 </form>
 
                 <a href="{{ route('device_data.index') }}" class="btn btn-secondary"><i class="fa fa-arrow-left"></i>{{__('Back')}}</a>

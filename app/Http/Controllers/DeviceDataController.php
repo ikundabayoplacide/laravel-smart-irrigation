@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Exports\DeviceDataExport;
+use Illuminate\Support\Facades\Auth;
 
 class DeviceDataController extends Controller
 {
@@ -17,13 +18,29 @@ class DeviceDataController extends Controller
         // Get the selected device ID from the request
         $selectedDeviceID = $request->input('device_id');
 
-        // Fetch distinct device IDs for the dropdown filter
-        $deviceIDs = DeviceData::select('DEVICE_ID')->distinct()->get()->pluck('DEVICE_ID');
+        // Check if user is self_farmer and filter devices
+        if (Auth::user()->hasRole('self_farmer')) {
+            // Fetch distinct device IDs assigned to this user
+            $deviceIDs = DeviceData::where('user_id', Auth::id())
+                ->select('DEVICE_ID')
+                ->distinct()
+                ->get()
+                ->pluck('DEVICE_ID');
 
-        // Fetch data based on selected device ID
-        $data = $selectedDeviceID
-            ? DeviceData::where('DEVICE_ID', $selectedDeviceID)->paginate(10)
-            : DeviceData::paginate(10);
+            // Fetch data for user's devices only
+            $data = DeviceData::where('user_id', Auth::id())
+                ->when($selectedDeviceID, function($query) use ($selectedDeviceID) {
+                    return $query->where('DEVICE_ID', $selectedDeviceID);
+                })
+                ->paginate(10);
+        } else {
+            // Admin/cooperative_manager see all devices
+            $deviceIDs = DeviceData::select('DEVICE_ID')->distinct()->get()->pluck('DEVICE_ID');
+            
+            $data = $selectedDeviceID
+                ? DeviceData::where('DEVICE_ID', $selectedDeviceID)->paginate(10)
+                : DeviceData::paginate(10);
+        }
 
         // Return the view with data and filter options
         return view('device_data.index', compact('data', 'deviceIDs', 'selectedDeviceID'));
@@ -32,21 +49,38 @@ class DeviceDataController extends Controller
     {
         $selectedDeviceID = $request->input('device_id');
 
-        // Fetch distinct device IDs for the dropdown filter
-        $deviceIDs = DeviceData::select('DEVICE_ID')->distinct()->get()->pluck('DEVICE_ID');
+        // Check if user is self_farmer and filter devices
+        if (Auth::user()->hasRole('self_farmer')) {
+            // Fetch distinct device IDs assigned to this user
+            $deviceIDs = DeviceData::where('user_id', Auth::id())
+                ->select('DEVICE_ID')
+                ->distinct()
+                ->get()
+                ->pluck('DEVICE_ID');
 
-        // Fetch data based on selected device ID
-        $data = $this->fetchDeviceData($selectedDeviceID);
+            // Fetch data for user's devices only
+            $data = $this->fetchDeviceData($selectedDeviceID, Auth::id());
+        } else {
+            // Admin/cooperative_manager see all devices
+            $deviceIDs = DeviceData::select('DEVICE_ID')->distinct()->get()->pluck('DEVICE_ID');
+            $data = $this->fetchDeviceData($selectedDeviceID);
+        }
 
         if ($request->has('download')) {
             $format = $request->get('download');
 
-            // Filter data based on selected device ID for export
-            $exportData = $selectedDeviceID
-                ? DeviceData::where('DEVICE_ID', $selectedDeviceID)
-                    ->select('DEVICE_ID', 'S_TEMP', 'S_HUM', 'A_TEMP', 'A_HUM', 'PRED_AMOUNT', 'created_at')
-                    ->get()
-                : $data->getCollection();
+            // Filter data based on selected device ID and user for export
+            $queryBuilder = DeviceData::select('DEVICE_ID', 'S_TEMP', 'S_HUM', 'A_TEMP', 'A_HUM', 'PRED_AMOUNT', 'created_at');
+            
+            if (Auth::user()->hasRole('self_farmer')) {
+                $queryBuilder->where('user_id', Auth::id());
+            }
+            
+            if ($selectedDeviceID) {
+                $queryBuilder->where('DEVICE_ID', $selectedDeviceID);
+            }
+            
+            $exportData = $queryBuilder->get();
 
             if ($format === 'pdf') {
                 // Load the filtered data for PDF export
@@ -79,11 +113,19 @@ class DeviceDataController extends Controller
     }
 
 
-    private function fetchDeviceData($selectedDeviceID)
+    private function fetchDeviceData($selectedDeviceID, $userId = null)
     {
-        return $selectedDeviceID ? DeviceData::where('DEVICE_ID', $selectedDeviceID)
-            ->select('DEVICE_ID', 'S_TEMP', 'S_HUM', 'A_TEMP', 'A_HUM', 'PRED_AMOUNT', 'created_at')
-            ->paginate(10) : DeviceData::paginate(10);
+        $query = DeviceData::select('DEVICE_ID', 'S_TEMP', 'S_HUM', 'A_TEMP', 'A_HUM', 'PRED_AMOUNT', 'created_at');
+        
+        if ($userId) {
+            $query->where('user_id', $userId);
+        }
+        
+        if ($selectedDeviceID) {
+            $query->where('DEVICE_ID', $selectedDeviceID);
+        }
+        
+        return $query->paginate(10);
     }
 
     public function create()
@@ -94,6 +136,7 @@ class DeviceDataController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'name' => 'required|string|max:255',
             'DEVICE_ID' => 'required',
             'S_TEMP' => 'required|numeric',
             'S_HUM' => 'required|numeric',
@@ -126,6 +169,7 @@ class DeviceDataController extends Controller
     public function update(Request $request, DeviceData $device_data)
     {
         $request->validate([
+            'name' => 'required|string|max:255',
             'DEVICE_ID' => 'required',
             'S_TEMP' => 'required|numeric',
             'S_HUM' => 'required|numeric',

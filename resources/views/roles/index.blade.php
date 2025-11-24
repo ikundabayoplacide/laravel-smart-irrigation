@@ -54,11 +54,11 @@
                                     class="fa-solid fa-pen-to-square"></i>{{ __('Edit') }}</a>
                         @endcan
                         @can('role-delete')
-                            <form method="POST" action="{{ route('roles.destroy', $role->id) }}" style="display:inline">
+                            <form method="POST" action="{{ route('roles.destroy', $role->id) }}" style="display:inline" class="delete-form">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit"
-                                    class="btn btn-danger btn-sm "onclick="return confirm('Are you sure you want to delete this role?')">
+                                    class="btn btn-danger btn-sm ">
                                     <i class="fa-solid fa-trash"></i>{{ __('Delete') }}</button>
                             </form>
                         @endcan
@@ -70,6 +70,5 @@
         {!! $roles->links('pagination::bootstrap-5') !!}
 
     </main>
+    @include('layouts.script')
 @endsection
-
-@include('layouts.script')

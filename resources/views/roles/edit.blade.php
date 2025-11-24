@@ -1,65 +1,84 @@
 @extends('layouts.layout')
 @section('content')
-@include('layouts.head-part')
-@include('layouts.header-content')
-@include('layouts.aside')
+    @include('layouts.head-part')
+    @include('layouts.header-content')
+    @include('layouts.aside')
 
-<main id="main" class="main" style="height: 80vh">
-    <div class="row">
-        <div class="col-lg-12 margin-tb">
-            <div class="pull-left">
-                <h2>{{__('Edit Role')}}</h2>
-            </div>
-            <div class="pull-right">
-                <a class="btn btn-primary btn-sm mb-2" href="{{ route('roles.index') }}">
-                    <i class="fa fa-arrow-left"></i> {{__('Back')}}</a>
-            </div>
+    <main id="main" class="main" style="height: 80vh">
+        <div class="pagetitle">
+            <h1 class="text-2xl font-serif font-semibold text-center mb-4">{{ __('Edit Role') }}</h1>
         </div>
-    </div>
 
-    @if (count($errors) > 0)
-        <div class="alert alert-danger">
-            <strong>{{__('Whoops!')}}</strong>{{__('There were some problems with your input.')}}<br><br>
-            <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-            </ul>
-        </div>
-    @endif
+        <section class="section">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ __('Edit Role Details') }}</h5>
 
-    <form method="POST" action="{{ route('roles.update', $role->id) }}">
-        @csrf
-        @method('PUT')
-    
-        <div class="row">
-            <div class="col-xs-12 col-sm-12 col-md-12">
-                <div class="form-group">
-                    <strong>{{__('Name:')}}</strong>
-                    <input type="text" name="name" placeholder="Name" class="form-control" value="{{ $role->name }}">
+                            @if (count($errors) > 0)
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <strong>{{ __('Whoops!') }}</strong> {{ __('There were some problems with your input.') }}
+                                    <ul class="mb-0 mt-2">
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            @endif
+
+                            <form method="POST" action="{{ route('roles.update', $role->id) }}">
+                                @csrf
+                                @method('PUT')
+
+                                <div class="row mb-3">
+                                    <label for="name" class="col-sm-2 col-form-label">{{ __('Name') }}</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="name" id="name" class="form-control"
+                                            value="{{ $role->name }}" required>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label">{{ __('Permissions') }}</label>
+                                    <div class="col-sm-10">
+                                        <div class="row">
+                                            @foreach ($permission as $value)
+                                                <div class="col-md-6">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="permission[]"
+                                                            value="{{ $value->id }}" id="perm_{{ $value->id }}"
+                                                            {{ in_array($value->id, $rolePermissions) ? 'checked' : '' }}>
+                                                        <label class="form-check-label" for="perm_{{ $value->id }}">
+                                                            {{ $value->name }}
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-sm-10 offset-sm-2">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fa-solid fa-floppy-disk me-1"></i> {{ __('Update') }}
+                                        </button>
+                                        <a class="btn btn-secondary ms-2" href="{{ route('roles.index') }}">
+                                            <i class="fa fa-arrow-left me-1"></i> {{ __('Back') }}
+                                        </a>
+                                    </div>
+                                </div>
+
+                            </form>
+
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-sm-12 col-md-12">
-                <div class="form-group">
-                    <strong>{{__('Permissions:')}}</strong>
-                    <br/>
-                    @foreach($permission as $value)
-                        <label>
-                            <input type="checkbox" name="permission[]" value="{{ $value->id }}" class="name" {{ in_array($value->id, $rolePermissions) ? 'checked' : '' }}>
-                            {{ $value->name }}
-                        </label>
-                        <br/>
-                    @endforeach
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-12 col-md-12 text-center">
-                <button type="submit" class="btn btn-primary btn-sm mb-3"><i class="fa-solid fa-floppy-disk"></i> {{__('Submit')}}</button>
-            </div>
-        </div>
-    </form>
-    
-    
-</main>
+        </section>
+    </main>
+
+    @include('layouts.script')
 @endsection
-
-@include('layouts.script')

@@ -9,39 +9,9 @@
           </a>
       </li><!-- End Dashboard Nav -->
 
-      {{-- <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-menu-button-wide"></i><span class="font-serif text-xl">Components</span><i class="bi bi-chevron-down ms-auto"></i>
-        </a>
-        <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-          <li>
-            <a href="components-alerts.html">
-              <i class="bi bi-circle"></i><span class="font-serif text-xl">Alerts</span>
-            </a>
-          </li>
-
-
-        </ul>
-      </li><!-- End Components Nav --> --}}
-
-      {{-- <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-journal-text"></i><span class="font-serif text-xl">Forms</span><i class="bi bi-chevron-down ms-auto"></i>
-        </a>
-        <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-          <li>
-            <a href="forms-elements.html">
-              <i class="bi bi-circle"></i><span class="font-serif text-xl"> Users Form </span>
-            </a>
-          </li>
-          <li>
-            <a href="forms-layouts.html">
-              <i class="bi bi-circle"></i><span class="font-serif text-xl">Form Layouts</span>
-            </a>
-          </li>
-        </ul>
-      </li><!-- End Forms Nav --> --}}
-  @role('Admin')
+      {{-- Only show for Admin role --}}
+      @unlessrole('self_farmer')
+      @role('Admin')
       <li class="nav-item">
           <a class="nav-link @if(Request::segment(1) != 'roles') collapsed @endif" href="{{ route('roles.index') }}">
             <i class="fa-brands fa-critical-role"></i>
@@ -49,14 +19,10 @@
           </a>
       </li>
       @endrole
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="#">
-          <i class="fa-solid fa-file-invoice"></i>
-            <span class="font-serif text-xl">{{__('Reporting Management')}}</span>
-        </a>
-    </li>
+      @endunlessrole
+
     <li class="nav-item">
-      <a class="nav-link collapsed" href="#">
+      <a class="nav-link @if(Request::segment(1) != 'weather') collapsed @endif" href="{{ route('weather.index') }}">
         <i class="fa-solid fa-cloud"></i>
           <span class="font-serif text-xl">{{__('Weather Data Management')}}</span>
       </a>
@@ -73,44 +39,20 @@
         <span class="font-serif text-xl">{{__('Visualization of Data')}}</span>
     </a>
   </li>
+
+  {{-- Hide these from self_farmer --}}
+  @unlessrole('self_farmer')
   <li class="nav-item">
     <a class="nav-link @if (Request::segment(1) != 'farmers') collapsed @endif" href="{{url('farmers/index')}}">
       <i class="fa-duotone fa-solid fa-people-group"></i>
         <span class="font-serif text-xl">{{__('Farmer Management')}}</span>
     </a>
   </li>
-  {{-- <li class="nav-item">
-    <a class="nav-link collapsed" href="#">
-      <i class="fa-regular fa-address-card"></i>
-        <span class="font-serif text-xl">{{__('User Profile Management')}}</span>
-    </a>
-  </li> --}}
   <li>
     <a class="nav-link @if (Request::segment(1) != 'cooperative') collapsed @endif" href="{{url('cooperatives')}}">
       <i class="bi bi-menu-button-wide"></i><span class="font-serif text-xl">{{__('Cooperative Management')}}</span>
     </a>
   </li>
-  <li>
-    <a class="nav-link @if (Request::segment(1) != 'memberships') collapsed @endif" href="{{url('memberships')}}">
-        <i class="fa-duotone fa-solid fa-people-group"></i>
-        <span class="font-serif text-xl">{{__('Membership Management')}}</span>
-    </a>
-  </li>
-
-  {{-- <li class="nav-item">
-    <a class="nav-link collapsed" data-bs-target="#cooperative-nav" data-bs-toggle="collapse" href="#">
-      <i class="bi bi-menu-button-wide"></i><span class="font-serif text-xl">{{__('Cooperative Management')}}</span><i class="bi bi-chevron-down ms-auto"></i>
-    </a>
-    <ul id="cooperative-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-
-      <li>
-        <a class="nav-link @if (Request::segment(1) != 'assign') collapsed @endif" href="{{url('/assign')}}">
-          <i class="bi bi-circle"></i><span class="font-serif text-xl">{{__('Assign Farmer to Cooperative')}}</span>
-        </a>
-      </li>
-    </ul>
-  </li> --}}
-
 
   <li class="nav-item">
     <a class="nav-link @if (Request::segment(1) != 'users') collapsed @endif" href="{{ route('users.index') }}">
@@ -118,6 +60,8 @@
         <span class="font-serif text-xl">{{__('User Management')}}</span>
     </a>
   </li>
+  @endunlessrole
+
   @role('naeb')
   <li class="nav-item">
     <a class="nav-link @if (Request::segment(1) != 'role') collapsed @endif" href="#">
@@ -129,7 +73,7 @@
   </ul>
   <div class="ml-4">
     <i class="fa-sharp fa-solid fa-gear"></i>
-    <a href="#">
+    <a href="{{ route('settings.index') }}">
       <span class="font-serif text-2xl ">{{__('Settings')}}</span>
     </a>
   </div>

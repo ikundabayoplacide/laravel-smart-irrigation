@@ -13,7 +13,7 @@
                 <div class="form-group">
                     <label for="device_id">{{ __('Select Device:') }}</label>
                     <select name="device_id" id="device_id" class="form-control">
-                        <option value="">{{ __('--Select Device--') }}</option>
+                        <option value="">{{ __('--Choose Device--') }}</option>
                         @foreach ($deviceIDs as $deviceID)
                             <option value="{{ $deviceID }}"
                                 {{ $selectedDeviceID == $deviceID ? 'selected' : '' }}>
@@ -41,9 +41,9 @@
                 <i class="fas fa-file-csv"></i>
                 <span>CSV</span>
             </a>
-            <button id="copy-button" class="btn btn-gray flex items-center space-x-2">
+            <!-- <button id="copy-button" class="btn btn-gray flex items-center space-x-2">
                 <i class="fa fa-copy"></i> Copy
-            </button>
+            </button> -->
         </div>
 
         <section class="section">
@@ -83,6 +83,4 @@
     </main>
     {{-- @include('layouts.footer') --}}
     @include('layouts.script')
-
-  
 @endsection

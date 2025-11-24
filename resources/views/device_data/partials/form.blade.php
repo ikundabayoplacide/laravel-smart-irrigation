@@ -4,6 +4,10 @@
 @include('layouts.header-content')
 @include('layouts.aside')
 <div class="form-group">
+    <label for="name">{{ __('Device Name') }}</label>
+    <input type="text" class="form-control" name="name" value="{{ old('name', $deviceData->name ?? '') }}" required>
+</div>
+<div class="form-group">
     <label for="device_id">Device ID</label>
     <input type="text" class="form-control" name="DEVICE_ID" value="{{ old('DEVICE_ID', $deviceData->DEVICE_ID ?? '') }}" required>
 </div>

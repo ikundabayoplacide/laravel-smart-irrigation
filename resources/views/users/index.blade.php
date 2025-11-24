@@ -69,10 +69,10 @@
                         </a>
                         @endcan
                         @can('delete-user')
-                        <form method="POST" action="{{ url('/users/' . $item->id) }}" accept-charset="UTF-8" style="display:inline">
+                        <form method="POST" action="{{ url('/users/' . $item->id) }}" accept-charset="UTF-8" style="display:inline" class="delete-form">
                             {{ method_field('DELETE') }}
                             {{ csrf_field() }}
-                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this user?')" title="Delete User">
+                            <button type="submit" class="btn btn-danger btn-sm" title="Delete User">
                                 <i class="fa fa-trash" aria-hidden="true"></i>{{ __('Delete') }}
                             </button>
                         </form>
@@ -94,7 +94,5 @@
     </div>
 </main>
 
-@endsection
-{{-- 
-@include('layouts.footer') --}}
 @include('layouts.script')
+@endsection

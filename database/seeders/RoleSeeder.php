@@ -9,12 +9,12 @@ class RoleSeeder extends Seeder
     public function run(): void
     {
         $admin = Role::create(['name' => 'Admin']);
-        $rab = Role::create(['name' => 'rab']);
-        $sedo = Role::create(['name' => 'sedo']);
-        $naeb = Role::create(['name' => 'naeb']);
+        // $rab = Role::create(['name' => 'rab']);
+        // $sedo = Role::create(['name' => 'sedo']);
+        // $naeb = Role::create(['name' => 'naeb']);
         $cooperative_manager = Role::create(['name' => 'cooperative_manager']);
-        $sector_agronome = Role::create(['name' => 'sector_agronome']);
-        $district_agronome = Role::create(['name' => 'district_agronome']);
+        // $sector_agronome = Role::create(['name' => 'sector_agronome']);
+        // $district_agronome = Role::create(['name' => 'district_agronome']);
         $self_farmer = Role::create(['name' => 'self_farmer']);
         
         $admin->givePermissionTo([
@@ -37,10 +37,10 @@ class RoleSeeder extends Seeder
             'delete-user',
         ]);
 
-        $sedo->givePermissionTo([
-            'create-cooperative',
-            'edit-cooperative',
-            'delete-cooperative',
-        ]);
+        // $sedo->givePermissionTo([
+        //     'create-cooperative',
+        //     'edit-cooperative',
+        //     'delete-cooperative',
+        // ]);
     }
 }

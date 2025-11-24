@@ -53,6 +53,7 @@
                             <th>{{ __('Email') }}</th>
                             <th>{{ __('District') }}</th>
                             <th>{{ __('Phone') }}</th>
+                            <th>{{ __('Cooperative') }}</th>
                             <th>{{ __('Action') }}</th>
                         </tr>
                     </thead>
@@ -64,6 +65,7 @@
                                 <td>{{ $farmer->email }}</td>
                                 <td>{{ $farmer->district }}</td>
                                 <td>{{ $farmer->phone }}</td>
+                                <td>{{ $farmer->cooperative->name ?? __('N/A') }}</td>
                                 <td>
                                     <a href="{{ route('farmers.show', ['farmers' => $farmer->id]) }}"
                                         class="btn btn-info btn-sm"><i class="fa-solid fa-list"></i>{{ __('View') }}</a>

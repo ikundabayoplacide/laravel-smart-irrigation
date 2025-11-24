@@ -12,14 +12,14 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::create(['name' => 'manage roles']);
 
         Role::create(['name' => 'admin', 'guard_name' => 'web']);
-        Role::create(['name' => 'rab', 'guard_name' => 'web']);
-        Role::create(['name' => 'sedo', 'guard_name' => 'web']);
-        Role::create(['name'=> 'naeb', 'guard_name' => 'web']);
+        // Role::create(['name' => 'rab', 'guard_name' => 'web']);
+        // Role::create(['name' => 'sedo', 'guard_name' => 'web']);
+        // Role::create(['name'=> 'naeb', 'guard_name' => 'web']);
         
         
         Role::create(['name' => 'cooperative_manager', 'guard_name' => 'web']);
-        Role::create(['name'=> 'sector_agronome', 'guard_name' => 'web']);
-        Role::create(['name'=> 'district_agronome', 'guard_name' => 'web']);
+        // Role::create(['name'=> 'sector_agronome', 'guard_name' => 'web']);
+        // Role::create(['name'=> 'district_agronome', 'guard_name' => 'web']);
         Role::create(['name'=> 'self-farmer', 'guard_name' => 'web']);
     }
 }

@@ -46,11 +46,11 @@
             <div class="btn-group" role="group">
 
 
-                <form action="{{ route('farmers.destroy', $farmers->id) }}" method="POST" style="display: inline-block;">
+                <form action="{{ route('farmers.destroy', $farmers->id) }}" method="POST" style="display: inline-block;" class="delete-form">
                     @csrf
                     @method('DELETE')
                     <a href="{{ route('farmers.edit', $farmers->id) }}" class="btn btn-warning"><i class="fa-solid fa-pen-to-square"></i>{{__('Edit')}}</a>
-                    <button type="submit" class="btn btn-danger"onclick="return confirm('Are you sure you want to delete this Farm?')"><i class="fa-solid fa-trash" ></i>{{__('Delete')}}</button>
+                    <button type="submit" class="btn btn-danger"><i class="fa-solid fa-trash" ></i>{{__('Delete')}}</button>
                     <a href="{{ route('farmers.index') }}" class="btn btn-secondary"><i class="fa fa-arrow-left"></i>{{__('Back to List')}}</a>
                 </form>
 

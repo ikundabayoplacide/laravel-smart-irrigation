@@ -72,14 +72,14 @@
     {
         $this->validate($request, [
             'name' => 'required|unique:roles,name',
-            'permission' => 'required',
+            'permission' => 'required|array',
         ]);
     
         $role = Role::create(['name' => $request->input('name')]);
-        $permissions = array_keys($request->input('permission'));
-
-
-    $role->syncPermissions($permissions);
+        
+        // Sync permissions by name
+        $permissions = Permission::whereIn('id', $request->input('permission'))->pluck('name');
+        $role->syncPermissions($permissions);
     
         return redirect()->route('roles.index')
             ->with('success', 'Role created successfully');

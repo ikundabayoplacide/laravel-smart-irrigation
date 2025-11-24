@@ -25,11 +25,12 @@ class AdminLoginController extends Controller
 
         $user = User::where('email', $request->email)->first();
         if ($user && Hash::check($request->password, $user->password)) {
-            if (in_array($user->role, ['admin', 'sedo', 'cooperative_manager'])) {
+            if (in_array($user->role, ['admin', 'sedo', 'cooperative_manager', 'self_farmer'])) {
                 Auth::login($user);
 
-                $dashboardController = new AdminDashboardController();
-                return $dashboardController->dashboard($request);
+                // $dashboardController = new AdminDashboardController();
+                // return $dashboardController->dashboard($request);
+                return redirect()->route('admin.dashboard');
             }
         }
 
